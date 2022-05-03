@@ -1,0 +1,22 @@
+import os
+import pandas as pd
+import datetime as dt
+import win32com.client
+
+outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
+inbox = outlook.GetDefaultFolder(6)
+messages = inbox.Items
+
+#Empty Lists
+email_subject = []
+email_date = []
+email_content = []
+
+#find emails
+
+for message in messages:
+    if message.SenderEmailAddress == 'evelynsankar@gmail.com' and message.Subject.startswith('Fulcrum'):
+        email_subject.append(message.Subject)
+        email_date.append(message.senton.date()) 
+        email_content.append(message.body)
+
