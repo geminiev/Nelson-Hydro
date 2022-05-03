@@ -1,50 +1,35 @@
-function telus() { 
+function needMail(event) { 
     
-    if(payload.data.send_to_telus) {
-        sendTelusMail();
+    if(event.send_to_telus || event.send_to_shaw) {
+        sendMail(event);
     }
 }
 
-function shaw(){
-    if(payload.data.send_to_shaw) {
-        sendShawMail();
-    }
-}
+function sendMail(event) {
 
-function sendTelusMail() {
-
-    var record_id = payload.data.id;
-    var user = payload.data.updated_by;
-    var lat = payload.data.latitude;
-    var lng = payload.data.longitude;
-    var status = payload.data.status;
+    var problem = event.short_problem_description;
+    var status = event.status;
+    var title = event.title
+    var updated_at = event.time
 
     var body = "<p>" +
-    "<b>User: </b>" + user + "<br>" +
-    "<b>Record Title: </b>" + title + "<br>" +
+    "<b>User: </b>" + USERFULLNAME + "<br>" +
+    "<b>Title: </b>" + title + "<br>" +
+    "<b>Problem: </b>" + problem + "<br>" +
     "<b>Status:</b>" + status + "<br>" +
     "<b>Timestamp: </b>" + updated_at + "<br>" +
-    "<b>Location: </b>" + latitude + "," + longitude + "<br>"
+    "<b>Location: </b>" + LATITUDE + "," + LONGITUDE + "<br>"
     
-    window.location.href = 'mailto:esankar@nelson.ca?subject=Hello there&body=This is the body';
-
+    who_to(event);
+    return;
 }
 
-function sendShawMail() {
+function who_to(event) {
+  if (event.send_to_shaw) {
+    window.location.assign('mailto:esankar@nelson.ca?subject=Hello there&body=This is the body'); // test content
+  }
 
-    var record_id = payload.data.id;
-    var user = payload.data.updated_by;
-    var lat = payload.data.latitude;
-    var lng = payload.data.longitude;
-    var status = payload.data.status;
-
-    var body = "<p>" +
-    "<b>User: </b>" + user + "<br>" +
-    "<b>Record Title: </b>" + title + "<br>" +
-    "<b>Status:</b>" + status + "<br>" +
-    "<b>Timestamp: </b>" + updated_at + "<br>" +
-    "<b>Location: </b>" + latitude + "," + longitude + "<br>"
-    
-    window.location.href = 'mailto:esankar@nelson.ca?subject=Nelson Hydro Issue&body=test';
-
+  if (event.send_to_telus) {
+    window.location.assign('mailto:esankar@nelson.ca?subject=Hello there&body=This is the body');
+  }
 }
