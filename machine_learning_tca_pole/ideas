@@ -1,0 +1,2 @@
+linecrew's camera looks at tag on pole, autopopulates the fields in Fulcrum
+need to go from export image in fulcrum -> python for parsing it, recognizing what it is -> return to fields in python via json
