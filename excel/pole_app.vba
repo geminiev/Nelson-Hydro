@@ -1,14 +1,15 @@
 ' by Eve. This macro sorts and places the desired year's records onto TCA Year Summary
-
-Sub CopyRow2()
+Public Sub CopyRow2_good()
 'Declare variables
-    Dim sheetNo20 As Worksheet
-    Dim sheetNo25 As Worksheet
+    Dim sheetNo1 As Worksheet
+    Dim sheetNo2 As Worksheet
     Dim FinalRow As Long
     Dim Cell As Range
+    Dim year1 As String
 'Set variables
     Set sheetNo1 = Sheets("NHPoleCatalog")
     Set sheetNo2 = Sheets("TCA Year Summary")
+    year1 = Range("AM93").Value
 'Clear destination sheet
     sheetNo2.Cells.Clear
 'Type a command to select the entire row
@@ -20,13 +21,11 @@ Sub CopyRow2()
 'Apply loop for column E until last cell with value
     For Each Cell In .Range("B1:B" & .Cells(.Rows.Count, "B").End(xlUp).Row)
 'Apply condition to match the "Sold" value
-        If Cell.Value = "2022" Or Cell.Value = "YEAR" Then
+        If Cell.Value = year1 Or Cell.Value = "YEAR" Then
 'Command to Copy and move to a destination Sheet "Sold2"
             .Rows(Cell.Row).Copy Destination:=sheetNo2.Rows(FinalRow2 + 1)
             FinalRow2 = FinalRow2 + 1
-'Apply condition to match the "Unsold" value
-        Else
         End If
-     Next Cell
+    Next Cell
     End With
 End Sub
