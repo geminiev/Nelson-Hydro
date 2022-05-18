@@ -1,0 +1,45 @@
+/**
+ Title:   Google Apps Script for importing CSV files from Fulcrum Query API into Drive
+ Notes:   Be sure to manually run the exportData() function at least once to authorize the script. Set a timed trigger to automate imports.
+ esankar@nelson.ca
+ --CSV file format--
+**/
+ 
+var fulcrumToken = "7cdeeac6574d3bdd4d528ec324e07d3504eeaa75e0361217a135217f5c5776c93486aac8f721128f";
+var fulcrumFormName = 'In progress: Updated TCA Pole Replacement App'
+var fulcrumFormID = "8fa704f2-f59b-45fd-a830-9e6e8a9e1e3c"; // app 
+var filesFolder = "1cjTia5gUD83wStl8QESPHwVDxhmJOhnP";
+
+function exportData() {
+  var query = "SELECT * FROM \"" + fulcrumFormName + "\" WHERE _server_updated_at >= NOW() - '1 week'::INTERVAL ORDER BY _server_updated_at DESC";
+  var url = "https://api.fulcrumapp.com/api/v2/query/";
+  var options = {
+    "method": "POST",
+    "headers": {
+      "X-ApiToken": fulcrumToken,
+      "Accept": "application/json"
+    },
+    "contentType": "application/json",
+    "payload" : JSON.stringify({
+      "q": query,
+      "format": "csv"
+    })
+  };
+  var csvFile = UrlFetchApp.fetch(url, options);
+  var date = Utilities.formatDate(new Date(), "GMT", "yyyy-MM-dd");
+  DriveApp.getFolderById(filesFolder).createFile(date+".csv", csvFile, MimeType.CSV);
+  sendEmail(1);
+}
+
+function sendEmail(count) {
+  var date = Utilities.formatDate(new Date(), "GMT", "yyyy-MM-dd");
+  var file = date+".csv"
+
+  MailApp.sendEmail({
+    to: "esankar@nelson.ca",
+    name: "Fulcrum Download Notifier",
+    subject: "Weekly Reports from Fulcrum",
+    htmlBody: "Your weekly download of the new TCA pole app has arrived.",
+    attachments: [file.getAs(MimeType.CSV)]
+  });
+}

@@ -1,7 +1,6 @@
 import cv2
 import pytesseract
 import numpy as np
-import argparse
 import imutils
 from matplotlib import pyplot as plt
 
@@ -56,28 +55,11 @@ for c in cnts:
 	if w >= 35 and h >= 100:
 		chars.append(c)
 
+# error here
+
 # compute the convex hull of the characters
 chars = np.vstack([chars[i] for i in range(0, len(chars))])
 hull = cv2.convexHull(chars)
 
-# allocate memory for the convex hull mask, draw the convex hull on
-# the image, and then enlarge it via a dilation
-
-mask = np.zeros(image.shape[:2], dtype="uint8")
-cv2.drawContours(mask, [hull], -1, 255, -1)
-mask = cv2.dilate(mask, None, iterations=2)
-cv2.imshow("Mask", mask)
-
-# take the bitwise of the opening image and the mask to reveal *just*
-# the characters in the image
-final = cv2.bitwise_and(opening, opening, mask=mask)
-
-# OCR the input image using Tesseract
-
-options = "--psm 8 -c tessedit_char_whitelist=0123456789"
-text = pytesseract.image_to_string(final, config=options)
-print(text)
-
-# show the final output image
-cv2.imshow("Final", final)
-cv2.waitKey(0)
+# text = pytesseract.image_to_string(dist)
+print(chars)
